@@ -1,0 +1,577 @@
+<?php
+
+$n = intval(fgets(STDIN));
+$arr = array_fill(0,$n,null);
+
+for($i=0;$i<$n;$i++){
+    $arr[$i] = intval(fgets(STDIN));
+}
+
+/*
+echo '$n:',$n,"\n";
+for($i=0;$i<$n;$i++){
+    echo '$dArr[',"$i",']',"$dArr[$i]\n";
+}
+*/
+
+$ret = 0;
+$stacked = 101;
+$roopCnt = 0;
+while(true){
+    $del = 0;
+    $max = 0;
+    for($i=0;$i<count($arr);$i++){
+        if($max < $arr[$i]){
+            $max = $arr[$i];
+            $del = $i;
+        }
+    }
+    echo "残りのお餅で一番大きい:$max\n";
+    
+    // 残りのお餅を減らす
+    array_splice($arr, $del, 1);
+    
+    if($stacked > $max){
+        // $maxを積む
+        $stacked = $max;
+        echo "積んだお餅：$stacked,";
+        // 積んだ数をインクリする
+        $ret++;
+        echo "積んだ段数：$ret,";
+        echo "残りのお餅：";
+        for($i=0;$i<count($arr);$i++){
+            echo "$arr[$i],";
+        }
+        echo "\n";
+    }else{
+        echo "積まない";
+    }
+    $roopCnt++;
+    if($roopCnt == $n){
+        break;
+    }
+}
+
+echo $ret;
+
+/*
+$arr = explode(" ", fgets(STDIN));
+
+$ap = 0;
+$bp = 0;
+$roopCount=0;
+while(true){
+    $max = $arr[0];
+    $deli = 0;
+    for($i=1;$i<count($arr);$i++){
+        if($max < $arr[$i]){
+            $max = $arr[$i];
+            $deli = $i;
+        }
+    }
+    if($roopCount%2==0){
+        $ap += $max;
+    }else{
+        $bp += $max;
+    }
+    $roopCount++;
+    
+    array_splice($arr, $deli, 1);
+    
+    if(count($arr) == 0){
+        break;
+    }
+}
+
+echo $ap-$bp;
+*/
+?>
+
+
+<?php
+$arr = explode(" ", fgets(STDIN));
+$n = intval($arr[0]);
+$y = intval($arr[1]);
+
+echo "N: $n 枚\n";
+echo "Y: $y 円\n";
+
+$resultY = 0;
+// Y円を表す最小枚数を検証する
+$tenThousandCount = intdiv($y,10000);
+$resultY = $y - $tenThousandCount*10000;
+
+$fiveThousandCount = intdiv($resultY,5000);
+$resultY -= $fiveThousandCount*5000;
+
+$thousandCount = intdiv($resultY,1000);
+$resultY -= $fiveThousandCount*1000;
+
+$sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+
+echo "  万:$tenThousandCount 枚\n";
+echo " 5千:$fiveThousandCount 枚\n";
+echo "  千:$thousandCount 枚\n";
+echo "合計:$sumCount 枚\n";
+
+
+// 検証
+
+
+$whileCnt=0;
+while(true){
+    if($sumCount > $n){
+        $diffCount = $sumCount - $n;
+        $changeCount1000_10000 = intdiv($diffCount,9);
+        $diffCount = $diffCount%9;
+        $changeCount1000_5000 = intdiv($diffCount,4);
+        $changeCount5000_10000 = $diffCount%4;
+
+        for($i=0;$i<$changeCount1000_10000;$i++){
+            $tenThousandCount += 1;
+            $thousandCount -= 10;
+        }
+        for($i=0;$i<$changeCount1000_5000;$i++){
+            $fiveThousandCount += 1;
+            $thousandCount -= 5;
+        }
+        for($i=0;$i<$changeCount5000_10000;$i++){
+            $tenThousandCount += 1;
+            $fiveThousandCount -= 2;
+        }
+        if($sumCount = $n){
+            echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount;
+            break;
+        }else{
+            echo "-1 -1 -1";
+            break;
+        }
+    }
+    if($sumCount == $n){
+        echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount;
+        break;
+    }
+    if($tenThousandCount>0){
+        $tenThousandCount--;
+        $fiveThousandCount += 2;
+        $sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+        echo "1万円札を5千円札に崩した。現在$sumCount 枚\n";
+        echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount,"\n";
+    }elseif($fiveThousandCount>0){
+        $fiveThousandCount--;
+        $thousandCount += 5;
+        $sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+        echo "5千円札を千円札に崩した。現在$sumCount 枚\n";
+        echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount,"\n";
+    }
+    
+    $whileCnt++;
+    if($whileCnt>=10000){
+        break;
+    }
+}
+
+
+
+
+
+
+
+// 20,000,000
+/*
+$n = intval(fgets(STDIN));
+$arr = array_fill(0,$n,null);
+for($i=0;$i<$n;$i++){
+    $arr[$i] = intval(fgets(STDIN));
+}
+$ret = 0;
+$stacked = 101;
+$roopCnt = 0;
+while(true){
+    $del = 0;
+    $max = 0;
+    for($i=0;$i<count($arr);$i++){
+        if($max < $arr[$i]){
+            $max = $arr[$i];
+            $del = $i;
+        }
+    }
+    array_splice($arr, $del, 1);
+    if($stacked > $max){
+        $stacked = $max;
+        $ret++;
+    }
+    $roopCnt++;
+    if($roopCnt == $n){
+        break;
+    }
+}
+echo $ret;
+*/
+?>
+
+
+<?php
+$arr = explode(" ", fgets(STDIN));
+$n = intval($arr[0]);
+$y = intval($arr[1]);
+$resultY = 0;
+$tenThousandCount = intdiv($y,10000);
+$resultY = $y - $tenThousandCount*10000;
+$fiveThousandCount = intdiv($resultY,5000);
+$resultY -= $fiveThousandCount*5000;
+$thousandCount = intdiv($resultY,1000);
+$resultY -= $fiveThousandCount*1000;
+$sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+if($sumCount == $n){
+    echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount;
+    exit;
+}
+while(true){
+    if($fiveThousandCount>0){
+        $fiveThousandCount--;
+        $thousandCount += 5;
+        $sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+        echo "5千円札を千円札に崩した。現在$sumCount 枚\n";
+        echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount,"\n";
+    }elseif($tenThousandCount>0){
+        $tenThousandCount--;
+        $fiveThousandCount += 2;
+        $sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+        echo "1万円札を5千円札に崩した。現在$sumCount 枚\n";
+        echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount,"\n";
+    }
+    if($sumCount > $n){
+        $diffCount = $sumCount - $n;
+        $changeCount1000_10000 = intdiv($diffCount,9);
+        $diffCount = $diffCount%9;
+        $changeCount1000_5000 = intdiv($diffCount,4);
+        $changeCount5000_10000 = $diffCount%4;
+
+        if($thousandCount >= 10*$changeCount1000_10000){
+            $tenThousandCount += 1*$changeCount1000_10000;
+            $thousandCount -= 10*$changeCount1000_10000;
+        }
+        
+        if($thousandCount >= 5*$changeCount1000_5000){
+            $fiveThousandCount += 1*$changeCount1000_5000;
+            $thousandCount -= 5*$changeCount1000_5000;
+        }
+        
+        if($fiveThousandCount >= 2*$changeCount5000_10000){
+            $tenThousandCount += 1*$changeCount5000_10000;
+            $fiveThousandCount -= 2*$changeCount5000_10000;
+        }
+        
+        $sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+        if($sumCount != $n){
+            echo "-1 -1 -1";
+            exit;
+        }
+    }
+    if($sumCount == $n){
+        echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount;
+        exit;
+    }
+}
+?>
+
+$n = intval($arr[0]);
+$y = intval($arr[1]);
+$resultY = 0;
+$tenThousandCount = intdiv($y,10000);
+$resultY = $y - $tenThousandCount*10000;
+$fiveThousandCount = intdiv($resultY,5000);
+$resultY -= $fiveThousandCount*5000;
+$thousandCount = intdiv($resultY,1000);
+$resultY -= $fiveThousandCount*1000;
+$sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+if($sumCount == $n){
+    echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount;
+    exit;
+}
+while(true){
+    if($tenThousandCount>0){
+        $tenThousandCount--;
+        $fiveThousandCount += 2;
+        $sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+        echo "1万円札を5千円札に崩した。現在$sumCount 枚\n";
+        echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount,"\n";
+    }elseif($fiveThousandCount>0){
+        $fiveThousandCount--;
+        $thousandCount += 5;
+        $sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+        echo "5千円札を千円札に崩した。現在$sumCount 枚\n";
+        echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount,"\n";
+    }
+    if($sumCount > $n){
+        $diffCount = $sumCount - $n;
+        
+        if($fiveThousandCount >= 2*$diffCount){
+            $tenThousandCount += 1*$diffCount;
+            $fiveThousandCount -= 2*$diffCount;
+        }
+        
+        $sumCount = $tenThousandCount+$fiveThousandCount+$thousandCount;
+        if($sumCount != $n){
+            echo "-1 -1 -1";
+            exit;
+        }
+    }
+    if($sumCount == $n){
+        echo $tenThousandCount," ",$fiveThousandCount," ",$thousandCount;
+        exit;
+    }elseif($sumCount < $n && $tenThousandCount ==0 && $fiveThousandCount == 0){
+        echo "-1 -1 -1";
+        exit;
+    }
+}
+
+<?php
+$s = rtrim(fgets(STDIN));
+$continueFlag = true;
+while( mb_strlen($s) > 0 ){
+    $continueFlag = false;
+    echo $s,"\n";
+    echo mb_strlen($s),"\n";
+    
+    $str = substr($s,0,11);
+    if( $str == "dreameraser" ){
+        $s = substr($s,11);
+        echo "残りの文字列：[",$s,"]";
+        $continueFlag = true;
+    }
+    
+    $str = substr($s,0,10);
+    if( $str == "dreamerase" ){
+        $s = substr($s,10);
+        echo "残りの文字列：[",$s,"]";
+        $continueFlag = true;
+    }
+
+    $str = substr($s,0,7);
+    if( $str == "dreamer"){
+        $s = substr($s,7);
+        echo "残りの文字列：[",$s,"]";
+        $continueFlag = true;
+    }
+    
+
+    $str = substr($s,0,5);
+    if( $str == "dream" || $str == "erase"){
+        $s = substr($s,5);
+        echo "残りの文字列：[",$s,"]";
+        $continueFlag = true;
+    }
+    
+    
+    if(!$continueFlag){
+        break;
+    }
+
+}
+echo "終わった時： $s", mb_strlen($s), "\n";
+if(mb_strlen($s) == 0){
+    echo "YES";
+}else{
+    echo "NO";
+}
+
+
+/*
+dreamdream
+dreamdreamer
+dreamerase
+dreameraser
+dreamerdream
+dreamerdreamer
+dreamererase 
+dreamereraser
+erasedream
+erasedreamer
+eraseerase 
+eraseeraser
+eraserdream
+eraserdreamer
+erasererase
+erasereraser
+*/
+?>
+
+
+
+
+
+
+
+-----
+<?php
+$n = intval(fgets(STDIN));
+$arr = array_fill(0,$n,null);
+for($i=0;$i<$n;$i++){
+    $arr[$i] = explode(" ", fgets(STDIN));
+}
+$nowX = 0;
+$nowY = 0;
+$nowTime = 0;
+foreach( $arr as $val ){
+    $time = $val[0];
+    $x = $val[1];
+    $y = $val[2];
+    $farTime = $time - $nowTime;
+    $far = abs($nowX - $x)+abs($nowY - $y);
+    if(
+        $far == $farTime
+        || (
+                $farTime > $far
+            &&  ($farTime - $far) % 2 == 0
+        )
+    ){
+        $nowX = $x;
+        $nowY = $y;
+        $nowTime = $time;
+    }else{
+        echo "No";
+        exit;
+    }
+}
+
+echo "Yes";
+
+?>
+
+
+
+
+for($i=0;$i<3;$i++){
+    if($i==0){
+        $retX1 = intval($arr[$i][0]);
+        $retY2 = intval($arr[$i][1]);
+    }else{
+        $x = intval($arr[$i][0]);
+        $y = intval($arr[$i][1]);
+        if($retX == $x){
+            $retX = 0;
+        }else{
+            $retX = intval($arr[$i][0]);
+        }
+
+        if($retY == $y){
+            $retY = 0;
+        }else{
+            $retY = intval($arr[$i][1]);
+        }
+    }
+    
+    echo $retX," ",$retY,"\n";
+}
+
+<?php
+$n = intval(fgets(STDIN));
+$arr = array_fill(0,$n,null);
+for($i=0;$i<$n;$i++){
+    $arr[$i] = fgets(STDIN);
+}
+
+$xy = explode(" ",fgets(STDIN));
+
+if($arr[$xy[0]-1] === $xy[1]){
+    echo "Yes";
+}else{
+    echo "No";
+}
+
+?>
+
+
+<?php
+$n = intval(rtrim(fgets(STDIN)));
+$s = rtrim(fgets(STDIN));
+$changeCount = 0;
+
+echo $n,"\n";
+echo $s,"\n";
+
+for($i=0;$i<$n*2-1;$i++){
+    echo "i:", $i , "\n";
+    $now = substr($s,$i,1);
+    echo "現在値：",$now,"\n";
+    for($j=$i+1;$j<$n*2;$j++){
+        echo "j:",$j , "\n";
+        $next = substr($s,$j,1);
+        echo "次の値：",$next,"\n";
+        if($now === $next){
+            echo "おんなじなので変えないといけないよ\n";
+            // 入れ替え処理
+            for($k=$j+1;$k<$n*2;$k++){
+                $change = substr($s,$k,1);
+                echo "変更対象の値：",$change,"\n";
+                if($now === $change){
+                    echo "変えられないよ\n";
+                    continue;
+                }else{
+                    echo "変えられるよ\n";
+                    // 変更対象の添字
+                    echo $k,"番目の文字",$change,"を",$j,"番目の文字",$next,"とかえるよ\n";
+                    
+                    for($l=0;$l<$k-$j;$l++){
+                        $tmp = $s[$k-1-$l];
+                        $s[$k-1-$l] = $s[$k-$l];
+                        $s[$k-$l] = $tmp;
+                        $changeCount++;
+                        echo "変えたよ", $s, " ",$changeCount,"回\n";
+                    }
+                    
+                    break;
+                }
+            }
+            echo "kループ終わり $s \n";
+            break;
+        }else{
+            echo "ちがうのでかえなくていいよ\n";
+            break;
+        }
+    }
+    echo "jループ終わり $s \n";
+}
+echo "iループ終わり $s \n";
+echo $changeCount;
+?>
+
+
+AtCoder Daily Training EASY 2025/09/02 19:30start
+<?php
+$s = rtrim(fgets(STDIN));
+$flag_a = false;
+$flag_b = false;
+$flag_c = false;
+for($i=0;$i<3;$i++){
+    $str = substr($s,$i,1);
+    if($str === "A"){
+        $flag_a = true;
+    }elseif($str === "B"){
+        $flag_b = true;
+    }elseif($str === "C"){
+        $flag_c = true;
+    }
+}
+if($flag_a && $flag_b && $flag_c){
+    echo "Yes";
+}else{
+    echo "No";
+}
+
+?>
+
+
+<?php
+$n = intval(rtrim(fgets(STDIN)));
+$s = rtrim(fgets(STDIN));
+
+if(strpos($s,'MM') === false && strpos($s,'FF') === false){
+    echo "Yes";
+}else{
+    echo "No";
+}
+
+?>
